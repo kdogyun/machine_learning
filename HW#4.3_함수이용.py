@@ -2,7 +2,7 @@ import tensorflow as tf
 from tensorflow import keras
 import numpy as np
 import matplotlib.pyplot as plt
-from keras.callbacks import EarlyStopping
+from tensorflow.keras.callbacks import EarlyStopping
 
 # Early Stopping
 
@@ -11,18 +11,14 @@ fashion_mnist = keras.datasets.fashion_mnist
 train_images = train_images / 255.0
 test_images = test_images / 255.0
 
-class_name = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
-              'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
-
 model = keras.Sequential()
-model.add(keras.layers.Flatten(input_shape=(28, 28), kernel_initializer='he_normal'))
-model.add(keras.layers.Dense(128, activation=tf.nn.relu, kernel_initializer='he_normal'))
-model.add(keras.layers.Dense(10, activation=tf.nn.softmax, kernel_initializer='he_normal'))
-model.compile(loss='categorical_crossentropy',
+model.add(keras.layers.Flatten(input_shape=(28, 28)))
+model.add(keras.layers.Dense(128, activation=tf.nn.relu))
+model.add(keras.layers.Dense(10, activation=tf.nn.softmax))
+model.compile(loss='sparse_categorical_crossentropy',
              optimizer='adam',
-             metrics=[keras.metrics.categorical_accuracy])
-early_stopping = EarlyStopping() # 조기종료 콜백함수 정의
-# 초기값: (monitor='val_loss', min_delta=0, patience=0, verbose=0, mode='auto')
+             metrics=['accuracy'])
+
 '''
 monitor : 관찰하고자 하는 항목입니다. ‘val_loss’나 ‘val_acc’가 주로 사용됩니다.
 min_delta : 개선되고 있다고 판단하기 위한 최소 변화량을 나타냅니다. 만약 변화량이 min_delta보다 적은 경우에는 개선이 없다고 판단합니다.
@@ -33,6 +29,11 @@ auto : 관찰하는 이름에 따라 자동으로 지정합니다.
 min : 관찰하고 있는 항목이 감소되는 것을 멈출 때 종료합니다.
 max : 관찰하고 있는 항목이 증가되는 것을 멈출 때 종료합니다.
 '''
+early_stopping = EarlyStopping() # 조기종료 콜백함수 정의
+# 초기값: (monitor='val_loss', min_delta=0, patience=0, verbose=0, mode='auto')
 history = model.fit(train_images, train_labels, epochs=5, batch_size=64, callbacks=[early_stopping])
 test_loss, test_acc = model.evaluate(test_images, test_labels)
+print('Test loss:', test_loss)
 print('Test accuracy:', test_acc)
+# patience = 5: loss 증가가 되었더라도 5 에폭 동안은 기다려보도록 지정 / loss: 0.35 accu: 0.8768
+# defalt / loss: 0.36 accu: 0.8699

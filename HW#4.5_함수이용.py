@@ -17,12 +17,12 @@ class_name = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
 
 def my_model():
     model = keras.Sequential()
-    model.add(keras.layers.Flatten(input_shape=(28, 28), kernel_initializer='he_normal'))
-    model.add(keras.layers.Dense(128, activation=tf.nn.relu, kernel_initializer='he_normal'))
-    model.add(keras.layers.Dense(10, activation=tf.nn.softmax, kernel_initializer='he_normal'))
-    model.compile(loss='categorical_crossentropy',
+    model.add(keras.layers.Flatten(input_shape=(28, 28)))
+    model.add(keras.layers.Dense(128, activation=tf.nn.relu))
+    model.add(keras.layers.Dense(10, activation=tf.nn.softmax))
+    model.compile(loss='sparse_categorical_crossentropy',
                  optimizer='adam',
-                 metrics=[keras.metrics.categorical_accuracy])
+                 metrics=['accuracy'])
     return model
 
 model1 = KerasClassifier(build_fn = my_model, epochs = 5, verbose = 0)
@@ -34,3 +34,4 @@ ensemble_clf.fit(train_images, train_labels)
 y_pred = ensemble_clf.predict(test_images)
 
 print('Test accuracy:', accuracy_score(y_pred, test_labels))
+# acc: 0.8832
