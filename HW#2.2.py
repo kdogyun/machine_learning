@@ -1,11 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def activation_1(n):
     return 1 / (1 + np.exp(-n))
 
 def activation_2(n):
     return n
+
 
 p = np.arange(-2, 2, 0.01)
 
